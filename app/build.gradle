@@ -13,6 +13,14 @@ def clientId = properties.client_id ?: System.getenv('CLIENT_ID') ?: ""
 def redirectUrl = properties.redirect_url ?: System.getenv('REDIRECT_URL') ?: ""
 def redirectScheme = properties.redirect_scheme ?: System.getenv('REDIRECT_SCHEME') ?: ""
 
+/**
+ * Helper function: always returns a valid quoted string for BuildConfig
+ * Even if val is empty, will return a safe dummy.
+ */
+def safeString = { val, fallback ->
+    return val ? "\"${val}\"" : "\"${fallback}\""
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -33,9 +41,9 @@ android {
 
     buildTypes {
         all {
-            buildConfigField "String", "ISSUER", issuer
-            buildConfigField "String", "CLIENT_ID", clientId
-            buildConfigField "String", "REDIRECT_URL", redirectUrl
+            buildConfigField "String", "ISSUER", safeString(issuer, "dummy_issuer")
+            buildConfigField "String", "CLIENT_ID", safeString(clientId, "dummy_client_id")
+            buildConfigField "String", "REDIRECT_URL", safeString(redirectUrl, "dummy_redirect_url")
         }
         release {
             minifyEnabled false
