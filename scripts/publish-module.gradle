@@ -69,14 +69,22 @@ afterEvaluate {
     }
 }
 
-ext["signing.keyId"] = rootProject.ext["signing.keyId"]
-ext["signing.password"] = rootProject.ext["signing.password"]
-ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
+if (
+    rootProject.hasProperty('signing.keyId') &&
+    rootProject.hasProperty('signing.password') &&
+    rootProject.hasProperty('signing.secretKeyRingFile') &&
+    rootProject["signing.keyId"] &&
+    rootProject["signing.password"] &&
+    rootProject["signing.secretKeyRingFile"]
+) {
+    ext["signing.keyId"] = rootProject.ext["signing.keyId"]
+    ext["signing.password"] = rootProject.ext["signing.password"]
+    ext["signing.secretKeyRingFile"] = rootProject.ext["signing.secretKeyRingFile"]
 
-// Only require signing if all three secrets are defined (for Maven Central, not JitPack)
-signing {
-    sign publishing.publications
-    required {
-        ext.has("signing.keyId") && ext.has("signing.password") && ext.has("signing.secretKeyRingFile")
+    signing {
+        sign publishing.publications
+        required { true }
     }
+} else {
+    println("[oneloginoidc] Skipping signing, as no signing properties are present")
 }
