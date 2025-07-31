@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: "androidx.navigation.safeargs"
 
 Properties properties = new Properties()
 def propertiesFile = project.rootProject.file('local.properties')
